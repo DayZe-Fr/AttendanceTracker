@@ -1,5 +1,9 @@
-import dev.DayZe.View.GUI;
+import dev.DayZe.View.*;
 import dev.DayZe.tools;
+import dev.DayZe.Controller.*;
+import dev.DayZe.Database.*;
+//import dev.DayZe.DAO.*;
+//import dev.DayZe.Model.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,40 +11,55 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
-    public static tools tools;
+    private static tools _tools;
 
 
     // UI Components
-    public static GUI mainGUI;
+    private static GUI _mainGUI;
 
     // config Items
-    public static String configFile;
-    public static String[] configLines;
-    public static Map<String, String> configArgs;
+    private static String _configFile;
+    private static String[] _configLines;
+    private static Map<String, String> _configArgs;
+
+    //  Controller Items
+    private static signInController _signInController;
+
+    // Database
+    private static Database _Database;
+
 
 
 
     public static void main(String[] args) {
-        tools = new tools();
+        _tools = new tools();
         //getting config file
-        Map<String, String> configArgs = new HashMap<String, String>();
+        _configArgs = new HashMap<String, String>();
         try {
-            configFile = Files.readString(Path.of("src/dev/DayZe/View/Config.txt"));
+            _configFile = Files.readString(Path.of("src/dev/DayZe/View/Config.txt"));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        configLines = configFile.split(";");
+        _configLines = _configFile.split(";");
 
-        for (String configLine : configLines) {
+        for (String configLine : _configLines) {
             String[] part = configLine.split("->");
-            configArgs.put(part[0].trim(), part[1].trim());
+            _configArgs.put(part[0].trim(), part[1].trim());
         }
 
-        tools.print(configArgs.get("width"));
+        tools.print(_configArgs.get("width"));
 
         // will validate the input later.
 
         // ====================================
+        //creating GUI
+        _mainGUI = new GUI(Integer.parseInt(_configArgs.get("height")), Integer.parseInt(_configArgs.get("width")));
+
+        //creating db
+        _Database = new Database(_tools);
+
+        //creating signin controller
+        _signInController = new signInController(_tools, _mainGUI);
 
 
 
@@ -52,7 +71,7 @@ public class Main {
 
 
 
-        mainGUI = new GUI(Integer.parseInt(configArgs.get("height")), Integer.parseInt(configArgs.get("width")));
+
 
 
     }
