@@ -1,2 +1,2 @@
 height->500;
-width->900;
+width->1000;
